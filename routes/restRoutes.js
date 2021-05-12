@@ -5,6 +5,13 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const { llave } = require('../configs/config')
+const mqttHandler = require('../mqtt/mqtt_handler')
+const axios = require('axios').default;
+
+
+
+let mqttClient = new mqttHandler()
+mqttClient.connect()
 
 
 router.use(bodyParser.urlencoded({extended: false}))
@@ -128,8 +135,17 @@ router.delete('/authorization', async (req, res)=>{
     }
 })
 
-router.post('/messages/send', ()=>{
-    
+router.post('/messages/send', async (req, res)=>{
+    try{
+        const {_id} = req.body
+        const rescat = await axios.get('https://catfact.ninja/facts', {params: {data:0}})
+        const message =  rescat.data.data[0].fact
+        
+        await mqttClient.sendMessage(_id, message)
+        res.status(200).send('Mensaje enviado correctamente')
+    }catch(err){
+        res.send(err.message)
+    }
 })
 
 

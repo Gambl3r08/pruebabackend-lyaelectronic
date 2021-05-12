@@ -18,11 +18,13 @@
   },
   "homepage": "https://github.com/Gambl3r08/pruebabackend-lyaelectronic#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.8"
+    "mongoose": "^5.12.8",
+    "mqtt": "^4.2.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
