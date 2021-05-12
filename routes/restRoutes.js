@@ -33,7 +33,26 @@ router.post('/users', async (req, res)=>{
     
 })
 
-router.put('/users', (req, res)=>{
+router.put('/users/:id', async ( req, res)=>{
+    try{
+        
+        const {id} = req.params
+        const resuldID = await User.findById(id)
+        if(resuldID){
+            const {name, active} = req.body
+            const userUpdate = await User.findOneAndUpdate({'_id':id}, {
+                'name': name,
+                'active': active
+            })
+            console.log("body:",name, " ", active)
+            console.log("params:", req.params)
+            console.log("body: ", req.body)
+            res.status(200).send('Usuario actualizado')
+        }
+
+    } catch(err){
+        res.send(err.message)
+    }
 
 })
 
@@ -69,17 +88,48 @@ router.patch('/users/:id/active', async (req, res)=>{
     
 })
 
-router.get('/users', (req, res)=>{
-    res.send("askjfkalsjf")
+router.get('/users/:id', async (req, res)=>{
+    try{
+        const {id} = req.params
+        const resuldID = await User.findById(id)
+        if(resuldID){
+            res.status(200).send({resuldID})
+        }
+    } catch(err){
+        res.send(err.message)
+    }
 })
 
 
-router.post('/authorization', (req, res)=>{
-    
+router.post('/authorization', async (req, res)=>{
+    try{
+        const {_id} = req.body
+        const resuldID = await User.findById(_id)
+        const token = resuldID.token
+        if(resuldID){
+            res.status(200).send({token})
+        }
+
+    } catch(err){
+        res.send(err.message)
+    }
 })
 
-router.delete('/authorization', (req, res)=>{
+router.delete('/authorization', async (req, res)=>{
+    try{
+        const {_id} = req.body
+        const resuldID = await User.findById(_id)
+        const token = resuldID.token
+        if(resuldID){
+            const deleteToken = await User.findByIdAndUpdate({'_id':_id}, {
+                'token': null
+            }) 
+            res.status(200).send({message: "Token eliminado"})
+        }
 
+    } catch(err){
+        res.send(err.message)
+    }
 })
 
 router.post('/messages/send', ()=>{
