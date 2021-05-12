@@ -11,7 +11,6 @@ router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 
 
-
 router.post('/users', async (req, res)=>{
     try{
         const payload ={
@@ -44,9 +43,6 @@ router.put('/users/:id', async ( req, res)=>{
                 'name': name,
                 'active': active
             })
-            console.log("body:",name, " ", active)
-            console.log("params:", req.params)
-            console.log("body: ", req.body)
             res.status(200).send('Usuario actualizado')
         }
 
@@ -133,7 +129,7 @@ router.delete('/authorization', async (req, res)=>{
 })
 
 router.post('/messages/send', ()=>{
-
+    
 })
 
 
