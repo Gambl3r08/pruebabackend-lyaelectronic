@@ -1,12 +1,14 @@
 const {Schema, model} = require('mongoose')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const config = require('../configs/config')
+const { llave } = require('../configs/config')
+require('../configs/config')
+
+
+
 const userSchema =  new Schema(
     {
-        id:{
-            type: Number,
-            unique: true,
-            index: true
-        },
         name:{
             type: String,
             required: true,
@@ -17,19 +19,35 @@ const userSchema =  new Schema(
             default: false
         },
         token: {
-            type: String
+            type: String,
+            required: false
         }
     }
 )
 
-userSchema.methods.encrypToken = async Token =>{
-    await const salt = bcrypt.getSalt(10)
-    return await bcrypt.hash(Token, salt)
+userSchema.methods.GenerateToken = async function (username){
+    if(true){ //Luego valido
+        const payload ={
+            check: true
+        }
+        const token = jwt.sign(payload, llave, {
+            expiresIn: 1440
+        })
+        return token
+    }
+}
+
+
+userSchema.methods.encrypToken = async function(Token){
+    
+    return await bcrypt.hash(Token, bcrypt.getSalt(10))
 }
 
 userSchema.methods.matchToken = async function (Token) {
     return await bcrypt.compare(Token, this.token)
 }
+
+
 
 
 
