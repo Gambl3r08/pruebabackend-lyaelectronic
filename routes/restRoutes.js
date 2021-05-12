@@ -14,7 +14,7 @@ router.use(bodyParser.json())
 
 router.post('/users', (req, res)=>{
     try{
-        let user = User({
+        var user = new User({
             name: req.body.username,
             active: false,
             token: "token"
