@@ -10,6 +10,7 @@ const axios = require('axios').default;
 
 
 
+
 let mqttClient = new mqttHandler()
 mqttClient.connect()
 
@@ -17,7 +18,25 @@ mqttClient.connect()
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 
-
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     description:  Crea un usuario.
+ *     parameters:
+ *       - name: username
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Nombre de usuario.
+ *     responses:
+ *       201:
+ *         description:  retorna el id del usuario creado
+ *       500:
+ *         description: retorna un error
+ *          
+ */
 router.post('/users', async (req, res)=>{
     try{
         const payload ={
@@ -39,6 +58,39 @@ router.post('/users', async (req, res)=>{
     
 })
 
+/**
+ * @swagger
+ * /users/:id:
+ *   put:
+ *     description:  Actualiza un usuario.
+ *     parameters:
+ *       - name: id
+ *         in: params
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *       - name: name
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Nombre de usuario.
+ *       - name: active
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: boolean
+ *         description: Estado de usuario.
+ * 
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
+
 router.put('/users/:id', async ( req, res)=>{
     try{
         
@@ -54,10 +106,33 @@ router.put('/users/:id', async ( req, res)=>{
         }
 
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 
 })
+
+
+
+/**
+ * @swagger
+ * /users/:id:
+ *   delete:
+ *     description:  Elimina un usuario.
+ *     parameters:
+ *       - name: id
+ *         in: paramns
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
+
 
 router.delete('/users/:id', async (req, res)=>{
     try{
@@ -71,10 +146,32 @@ router.delete('/users/:id', async (req, res)=>{
         }
 
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 
 })
+
+
+/**
+ * @swagger
+ * /users/:id/active:
+ *   patch:
+ *     description:  Actualiza el estado de un usuario.
+ *     parameters:
+ *       - name: id
+ *         in: paramns
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       201:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
+
 
 router.patch('/users/:id/active', async (req, res)=>{
     try{
@@ -82,14 +179,35 @@ router.patch('/users/:id/active', async (req, res)=>{
         const resuldID = await User.findById(id)
         if (resuldID){
             const userUpdate = await User.findOneAndUpdate({'_id': id}, {'active':true}, {new:true})
-            res.send(userUpdate)
+            res.status(201).send('usuario activado')
         }
 
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
     
 })
+
+
+/**
+ * @swagger
+ * /users/:id:
+ *   get:
+ *     description:  retorna información un usuario.
+ *     parameters:
+ *       - name: id
+ *         in: paramns
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
 
 router.get('/users/:id', async (req, res)=>{
     try{
@@ -99,9 +217,31 @@ router.get('/users/:id', async (req, res)=>{
             res.status(200).send({resuldID})
         }
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 })
+
+
+/**
+ * @swagger
+ * /authorization:
+ *   post:
+ *     description:  retorna un token de usuario.
+ *     parameters:
+ *       - name: _id
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
+
 
 
 router.post('/authorization', async (req, res)=>{
@@ -114,9 +254,30 @@ router.post('/authorization', async (req, res)=>{
         }
 
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 })
+
+
+/**
+ * @swagger
+ * /authorization:
+ *   delete:
+ *     description:  borra un token de usuario.
+ *     parameters:
+ *       - name: _id
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
 
 router.delete('/authorization', async (req, res)=>{
     try{
@@ -131,9 +292,30 @@ router.delete('/authorization', async (req, res)=>{
         }
 
     } catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 })
+
+
+/**
+ * @swagger
+ * /authorization:
+ *   post:
+ *     description:  consume una api y guarda un mensaje, luego envia ese mensaje más un id a un broker mqtt. 
+ *     parameters:
+ *       - name: _id
+ *         in: body
+ *         require: false
+ *         schema:
+ *          - type: string
+ *         description: Id de usuario.
+ *     responses:
+ *       200:
+ *         description:  retorna mensaje de confirmación
+ *       500:
+ *         description: retorna un error
+ *          
+ */
 
 router.post('/messages/send', async (req, res)=>{
     try{
@@ -144,7 +326,7 @@ router.post('/messages/send', async (req, res)=>{
         await mqttClient.sendMessage(_id, message)
         res.status(200).send('Mensaje enviado correctamente')
     }catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 })
 

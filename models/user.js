@@ -1,3 +1,21 @@
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        required:
+ *          - name
+ *        properties:
+ *          name:
+ *            type: string
+ *          active:
+ *            type: boolean   
+ *          token:
+ *            type: string
+ */
+
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
